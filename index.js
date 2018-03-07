@@ -1,6 +1,6 @@
 'use strict'
 var mongoose= require('mongoose');
-var app=require('./app');
+var app=require('./app/app');
 var port=process.env.port || 3977;
 mongoose.connect('mongodb://localhost:27017/tfg-back',(err,res)=>{
     if(err){

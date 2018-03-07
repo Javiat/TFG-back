@@ -6,7 +6,7 @@ var bodyParser=require('body-parser');
 var app=express();
 
 //Cargar rutas
-
+var user_routes=require('./api/users/users.routes');
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
@@ -15,6 +15,6 @@ app.use(bodyParser.json());
 
 
 //Cargar rutas base
-
+app.use('/api',user_routes);
 
 module.exports=app;
