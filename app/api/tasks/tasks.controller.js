@@ -5,14 +5,23 @@ var path=require('path');
 var fs=require('fs');
 var User=require('../users/users.model');
 var Task=require('./tasks.model');
+var moment=require('moment');
 
 function saveTask(req,res){
     var task=new Task();
     var params=req.body;
     var id=params.user;
+    var fecha_inicio=moment(params.fecha_inicio,moment.ISO_8601);
+    var fecha_fin=moment(params.fecha_fin,moment.ISO_8601);
     task.title=params.title;
     task.description=params.description;
-    task.duration=params.duration;
+    task.fecha_inicio=fecha_inicio
+    task.fecha_fin=fecha_fin;
+    var totalHours = (fecha_fin.diff(fecha_inicio, 'hours'));
+    var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
+    var clearMinutes = totalMinutes % 60;
+    console.log(totalHours + " hours and " + clearMinutes + " minutes");
+    task.duration=totalHours+":"+clearMinutes;
     task.type=params.type;
     task.user=params.user;
     User.findById(id,(err,user)=>{
@@ -73,19 +82,28 @@ function getTasks(req,res){
 function updateTask(req,res){
     var taskId=req.params.id;
     var update=req.body;
-    Task.findByIdAndUpdate(taskId,update,{new:true},(err,taskUpdated)=>{
-        if(err){
-            res.status(500).send({message:'Error en la servidor'});
-
-        }else{
-            if(!taskId){
-                res.status(404).send({message:'No se ha actualizado la tarea'});
-            }else{
-                res.status(200).send({task:taskUpdated});
-
+    Task.findById(taskId,(err,task)=>{
+            if(task.type=="solida"){
+                res.status(500).send({message:'Una tarrea solida no puede ser actualizada'})
+            }else {
+                Task.findByIdAndUpdate(taskId,update,{new:true},(err,taskUpdated)=>{
+                    if(err){
+                        res.status(500).send({message:'Error en la servidor'});
+            
+                    }else{
+                        if(!taskId){
+                            res.status(404).send({message:'No se ha actualizado la tarea'});
+                        }else{
+                            res.status(200).send({task:taskUpdated});
+            
+                        }
+                    }
+                });
             }
-        }
+            
+        
     });
+    
 }
 
 module.exports={

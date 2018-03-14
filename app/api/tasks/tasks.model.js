@@ -2,17 +2,16 @@
 
 var mongoose = require('mongoose');
 var Schema=mongoose.Schema;
-
+var moment=require('moment');
 var TaskSchema=Schema({
     title: {
         type: String,
 		required: true
     },
     description:String,
-    duration:{
-       type: Number,
-       required:true
-    },
+    fecha_inicio:String,
+    fecha_fin:String,
+    duration: String,
     type:{
        type: String,
        required:true,
