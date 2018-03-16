@@ -31,17 +31,23 @@ function saveTask(req,res){
             if(!user){
                 res.status(500).send({message:'No existe el usuario'});
             }else{
-                task.save((err,taskStored)=>{
-                    if(err){
-                        res.status(500).send({message:'Error al crear la tarea'});
-                    }else{
-                        if(!taskStored){
-                            res.status(404).send({message:'No se ha podido crear la tarea'});
+                if(task.fecha_inicio=="Invalid date" || task.fecha_fin=="Invalid date"){
+                    res.status(500).send({message:'Introduce una fecha valida'});
+
+                }else{
+                    task.save((err,taskStored)=>{
+                        if(err){
+                            res.status(500).send({message:'Error al crear la tarea'});
                         }else{
-                            res.status(200).send({task:taskStored});
+                            if(!taskStored){
+                                res.status(404).send({message:'No se ha podido crear la tarea'});
+                            }else{
+                                res.status(200).send({task:taskStored});
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                
             }
            
         }
@@ -84,31 +90,42 @@ function updateTask(req,res){
     var update=req.body;
     Task.findById(taskId,(err,task)=>{
             if(task.type=="solida"){
-                res.status(500).send({message:'Una tarrea solida no puede ser actualizada'})
+                res.status(500).send({message:'Una tarea solida no puede ser actualizada'})
             }else {
                 Task.findByIdAndUpdate(taskId,update,{new:true},(err,taskUpdated)=>{
                     if(err){
                         res.status(500).send({message:'Error en la servidor'});
-            
                     }else{
                         if(!taskId){
                             res.status(404).send({message:'No se ha actualizado la tarea'});
                         }else{
                             res.status(200).send({task:taskUpdated});
-            
                         }
                     }
                 });
-            }
-            
-        
+            }  
     });
     
+}
+function deleteTask(req,res){
+    var task_id=req.params.id;
+    Task.findByIdAndRemove(task_id,function(err,Task){
+        if(err){
+            res.status(404).send({messgae:'Error'});
+        }else{
+            if(Task){
+                res.status(200).send({Task:Task});
+            }else{
+                res.status(404).send({messgae:'No existe la tarea'});
+            }
+        }
+    });
 }
 
 module.exports={
     saveTask,
     getTask,
     getTasks,
-    updateTask
+    updateTask,
+    deleteTask
 };

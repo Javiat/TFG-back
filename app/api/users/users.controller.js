@@ -16,10 +16,10 @@ function saveUser(req,res){
     if(params.email && params.password){
         User.findOne({email: params.email.toLowerCase()},function(err,User){
             if(err){
-                res.status(404).send({messgae:'Error'});
+                res.status(404).send({message:'Error'});
             }else{
                 if(User){
-                    res.status(404).send({messgae:'El email ya existe'});
+                    res.status(404).send({message:'El email ya existe'});
                 }else{
                         bcrypt.hash(params.password,null,null,function(err,hash){
                         user.password=hash;
@@ -57,13 +57,11 @@ function loginUser(req,res){
     
     User.findOne({email:email.toLowerCase()},(err,user)=>{
        if(err){
-        res.status(404).send({messgae:'Error al hacer el login'});
+        res.status(404).send({message:'Error al hacer el login'});
        }else{
            if(!user){
                 res.status(500).send({message:'No existe el usuario'});
            }else{
-            console.log(password);
-            console.log(user.password);
                 bcrypt.compare(password,user.password,function(err,check){
                     if(check){
                         if(params.gethash){
@@ -72,7 +70,7 @@ function loginUser(req,res){
                                 token:jwt.createToken(user)
                             });
                         }else{
-                            res.status(404).send({user});
+                            res.status(200).send({user});
                         }
                     }else{
                         res.status(404).send({message:'No se ha podido identificar'});
@@ -84,9 +82,9 @@ function loginUser(req,res){
 }
 function updateUser(req,res){
     var userId=req.params.id;
-    var password=req.body.password;
-    bcrypt.hash(password,null,null,function(err,hash){
-    req.body.password=hash;
+    //var password=req.body.password;
+    //bcrypt.hash(password,null,null,function(err,hash){
+    //req.body.password=hash;
     var update=req.body;
             User.findByIdAndUpdate(userId,update,{new:true},(err,userUpdated)=>{
             if(err){
@@ -100,18 +98,18 @@ function updateUser(req,res){
             }
             
         });
-    });
+    //});
 }
 function deleteUser(req,res){
     var user_id=req.params.id;
     User.findByIdAndRemove(user_id,function(err,User){
         if(err){
-            res.status(404).send({messgae:'Error'});
+            res.status(404).send({message:'Error'});
         }else{
             if(User){
                 res.status(200).send({User:User});
             }else{
-                res.status(404).send({messgae:'No existe el usuario'});
+                res.status(404).send({message:'No existe el usuario'});
             }
         }
     });
@@ -132,7 +130,7 @@ function uploadImage(req,res){
                 if(!userUpdated){
                     res.status(404).send({message:'No se ha podido actualizar el usuario'});
                 }else{
-                    res.status(200).send({user:userUpdated});
+                    res.status(200).send({image:file_name,user:userUpdated});
                 }
     
             });

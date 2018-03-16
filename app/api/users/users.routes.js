@@ -9,9 +9,11 @@ var multipart=require('connect-multiparty');
 var md_upload=multipart({uploadDir:'./app/res/images'});
 
 api.post('/save-user',UserController.saveUser);
-api.delete('/delete-user/:id',UserController.deleteUser);
 api.post('/login-user',UserController.loginUser);
 api.post('/image-user/:id',md_upload,UserController.uploadImage);
-api.put('/update-user/:id',md_auth.ensureAuth,UserController.updateUser);
+
+api.delete('/delete-user/:id',UserController.deleteUser);
+
+api.put('/update-user/:id',UserController.updateUser);
 api.get('/get-image-user/:imageFile',UserController.getImageFile);
 module.exports=api;
