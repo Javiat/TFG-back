@@ -33,7 +33,6 @@ function saveTask(req,res){
             }else{
                 if(task.fecha_inicio=="Invalid date" || task.fecha_fin=="Invalid date"){
                     res.status(500).send({message:'Introduce una fecha valida'});
-
                 }else{
                     task.save((err,taskStored)=>{
                         if(err){
@@ -73,7 +72,6 @@ function getTasks(req,res){
     var userId=req.params.user;
     var find=Task.find({user:userId}).sort('type');
     find.populate('user').exec((err,tasks)=>{
-        console.log(tasks);
         if(err){
             res.status(500).send({message:'Error al hacer la consulta'});
         }else{
@@ -88,15 +86,26 @@ function getTasks(req,res){
 function updateTask(req,res){
     var taskId=req.params.id;
     var update=req.body;
+    var fecha_inicio=moment(update.fecha_inicio,moment.ISO_8601);
+    var fecha_fin=moment(update.fecha_fin,moment.ISO_8601);
+    update.fecha_inicio=fecha_inicio
+    update.fecha_fin=fecha_fin;
+    var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
+    var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
+    var clearMinutes = totalMinutes % 60;
+    console.log(totalHours + " hours and " + clearMinutes + " minutes");
+    update.duration=totalHours+":"+clearMinutes;
     Task.findById(taskId,(err,task)=>{
             if(task.type=="solida"){
-                res.status(500).send({message:'Una tarea solida no puede ser actualizada'})
+                res.status(500).send({message:'Una tarea solida no puede ser actualizada'});
             }else {
-                Task.findByIdAndUpdate(taskId,update,{new:true},(err,taskUpdated)=>{
+                console.log(update);
+                Task.findByIdAndUpdate(task.id,update,{new:true},(err,taskUpdated)=>{
+                    //console.log(taskUpdated);
                     if(err){
                         res.status(500).send({message:'Error en la servidor'});
                     }else{
-                        if(!taskId){
+                        if(!taskUpdated){
                             res.status(404).send({message:'No se ha actualizado la tarea'});
                         }else{
                             res.status(200).send({task:taskUpdated});
@@ -111,12 +120,12 @@ function deleteTask(req,res){
     var task_id=req.params.id;
     Task.findByIdAndRemove(task_id,function(err,Task){
         if(err){
-            res.status(404).send({messgae:'Error'});
+            res.status(404).send({message:'Error'});
         }else{
-            if(Task){
-                res.status(200).send({Task:Task});
+            if(!Task){   
+                res.status(404).send({message:'No existe la tarea'});
             }else{
-                res.status(404).send({messgae:'No existe la tarea'});
+                res.status(200).send({Task:Task});
             }
         }
     });

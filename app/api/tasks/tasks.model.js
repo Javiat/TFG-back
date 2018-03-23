@@ -9,8 +9,8 @@ var TaskSchema=Schema({
 		required: true
     },
     description:String,
-    fecha_inicio:String,
-    fecha_fin:String,
+    fecha_inicio:Date,
+    fecha_fin:Date,
     duration: String,
     type:{
        type: String,
