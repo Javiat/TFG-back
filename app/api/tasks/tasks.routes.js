@@ -14,7 +14,7 @@ api.get('/get-tasks/:user',TaskController.getTasks);
 
 //Operaciones put
 api.put('/update-task/:id',TaskController.updateTask);
-
+api.put('/update-event/:id',TaskController.updateEvent);
 
 //Operaciones delete
 api.delete('/delete-task/:id',TaskController.deleteTask);

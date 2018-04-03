@@ -9,12 +9,11 @@ var TaskSchema=Schema({
 		required: true
     },
     description:String,
-    fecha_inicio:Date,
-    fecha_fin:Date,
+    start:Date,
+    end:Date,
     duration: String,
     type:{
        type: String,
-       required:true,
        enum:['solida','liquida']
     },
     user:{type:Schema.ObjectId,ref:'User'}

@@ -11,12 +11,12 @@ function saveTask(req,res){
     var task=new Task();
     var params=req.body;
     var id=params.user;
-    var fecha_inicio=moment(params.fecha_inicio,moment.ISO_8601);
-    var fecha_fin=moment(params.fecha_fin,moment.ISO_8601);
+    var fecha_inicio=moment(params.start,moment.ISO_8601);
+    var fecha_fin=moment(params.end,moment.ISO_8601);
     task.title=params.title;
     task.description=params.description;
-    task.fecha_inicio=fecha_inicio
-    task.fecha_fin=fecha_fin;
+    task.start=fecha_inicio
+    task.end=fecha_fin;
     var totalHours = (fecha_fin.diff(fecha_inicio, 'hours'));
     var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
     var clearMinutes = totalMinutes % 60;
@@ -86,28 +86,30 @@ function getTasks(req,res){
 function updateTask(req,res){
     var taskId=req.params.id;
     var update=req.body;
-    var fecha_inicio=moment(update.fecha_inicio,moment.ISO_8601);
-    var fecha_fin=moment(update.fecha_fin,moment.ISO_8601);
-    update.fecha_inicio=fecha_inicio
-    update.fecha_fin=fecha_fin;
+    var fecha_inicio=moment(update.start,moment.ISO_8601);
+    var fecha_fin=moment(update.end,moment.ISO_8601);
+    update.start=fecha_inicio
+    update.end=fecha_fin;
     var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
     var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
     var clearMinutes = totalMinutes % 60;
     console.log(totalHours + " hours and " + clearMinutes + " minutes");
     update.duration=totalHours+":"+clearMinutes;
+    console.log(update);
     Task.findById(taskId,(err,task)=>{
-            if(task.type=="solida"){
+             if(task.type=="solida"){
                 res.status(500).send({message:'Una tarea solida no puede ser actualizada'});
-            }else {
-                console.log(update);
+             }else {
+               
                 Task.findByIdAndUpdate(task.id,update,{new:true},(err,taskUpdated)=>{
-                    //console.log(taskUpdated);
+                    
                     if(err){
-                        res.status(500).send({message:'Error en la servidor'});
+                        res.status(500).send({message:'Error en el servidor'});
                     }else{
                         if(!taskUpdated){
                             res.status(404).send({message:'No se ha actualizado la tarea'});
                         }else{
+                            console.log(taskUpdated);
                             res.status(200).send({task:taskUpdated});
                         }
                     }
@@ -115,6 +117,33 @@ function updateTask(req,res){
             }  
     });
     
+}
+function updateEvent(req,res){
+    var taskId=req.params.id;
+    var update=req.body;
+    var fecha_inicio=moment(update.start,moment.ISO_8601);
+    var fecha_fin=moment(update.end,moment.ISO_8601);
+    update.start=fecha_inicio
+    update.end=fecha_fin;
+    console.log(update);
+    // var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
+    // var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
+    // var clearMinutes = totalMinutes % 60;
+    // console.log(totalHours + " hours and " + clearMinutes + " minutes");
+    // update.duration=totalHours+":"+clearMinutes;
+    Task.findByIdAndUpdate(taskId,update,{new:true},(err,taskUpdated)=>{  
+        if(err){
+            res.status(500).send({message:'Error en el servidor'});
+       }else{
+            if(!taskUpdated){
+                res.status(404).send({message:'No se ha actualizado la tarea'});
+            }else{
+                console.log(taskUpdated);
+                res.status(200).send({task:taskUpdated});
+            }
+         }
+    });
+            
 }
 function deleteTask(req,res){
     var task_id=req.params.id;
@@ -136,5 +165,6 @@ module.exports={
     getTask,
     getTasks,
     updateTask,
-    deleteTask
+    deleteTask,
+    updateEvent
 };
