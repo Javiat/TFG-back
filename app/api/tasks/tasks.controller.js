@@ -86,9 +86,12 @@ function getTasks(req,res){
 function updateTask(req,res){
     var taskId=req.params.id;
     var update=req.body;
-    var fecha_inicio=moment(update.start,moment.ISO_8601);
-    var fecha_fin=moment(update.end,moment.ISO_8601);
-    update.start=fecha_inicio
+    var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+    var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+
+
+
+    update.start=fecha_inicio;
     update.end=fecha_fin;
     var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
     var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
@@ -121,8 +124,11 @@ function updateTask(req,res){
 function updateEvent(req,res){
     var taskId=req.params.id;
     var update=req.body;
-    var fecha_inicio=moment(update.start,moment.ISO_8601);
-    var fecha_fin=moment(update.end,moment.ISO_8601);
+    var fecha_inicio=new Date();
+    var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+    var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+
+    console.log(fecha_inicio);
     update.start=fecha_inicio
     update.end=fecha_fin;
     console.log(update);
