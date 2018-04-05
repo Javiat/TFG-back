@@ -11,17 +11,17 @@ function saveTask(req,res){
     var task=new Task();
     var params=req.body;
     var id=params.user;
-    var fecha_inicio=moment(params.start,moment.ISO_8601);
-    var fecha_fin=moment(params.end,moment.ISO_8601);
+    var fecha_inicio=moment(params.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+    var fecha_fin=moment(params.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
     task.title=params.title;
     task.description=params.description;
     task.start=fecha_inicio
     task.end=fecha_fin;
-    var totalHours = (fecha_fin.diff(fecha_inicio, 'hours'));
-    var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
-    var clearMinutes = totalMinutes % 60;
-    console.log(totalHours + " hours and " + clearMinutes + " minutes");
-    task.duration=totalHours+":"+clearMinutes;
+    // var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
+    // var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
+    // var clearMinutes = totalMinutes % 60;
+    // console.log(totalHours + " hours and " + clearMinutes + " minutes");
+    // task.duration=totalHours+":"+clearMinutes;
     task.type=params.type;
     task.user=params.user;
     User.findById(id,(err,user)=>{
@@ -56,6 +56,7 @@ function saveTask(req,res){
 
 function getTask(req,res){
     var taskId=req.params.id;
+    
     Task.findById(taskId).populate('user').exec((err,task)=>{
         if(err){
             res.status(500).send({message:'Error en la peticion'});
@@ -86,18 +87,15 @@ function getTasks(req,res){
 function updateTask(req,res){
     var taskId=req.params.id;
     var update=req.body;
-    var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
-    var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
-
-
-
-    update.start=fecha_inicio;
-    update.end=fecha_fin;
-    var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
-    var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
-    var clearMinutes = totalMinutes % 60;
-    console.log(totalHours + " hours and " + clearMinutes + " minutes");
-    update.duration=totalHours+":"+clearMinutes;
+    // var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+    // var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+    // update.start=fecha_inicio;
+    // update.end=fecha_fin;
+    // var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
+    // var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
+    // var clearMinutes = totalMinutes % 60;
+    // console.log(totalHours + " hours and " + clearMinutes + " minutes");
+    // update.duration=totalHours+":"+clearMinutes;
     console.log(update);
     Task.findById(taskId,(err,task)=>{
              if(task.type=="solida"){
