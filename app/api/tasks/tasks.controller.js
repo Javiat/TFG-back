@@ -11,17 +11,25 @@ function saveTask(req,res){
     var task=new Task();
     var params=req.body;
     var id=params.user;
-    var fecha_inicio=moment(params.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
-    var fecha_fin=moment(params.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+    if(params.start!=null && params.end!=null){
+        var fecha_inicio=moment(params.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+        var fecha_fin=moment(params.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+        task.start=fecha_inicio
+        task.end=fecha_fin;
+        console.log('entra');
+    }else{
+        task.start='';
+        task.end='';
+    }  
     task.title=params.title;
-    task.description=params.description;
-    task.start=fecha_inicio
-    task.end=fecha_fin;
+    task.localizacion=params.localizacion;
+    task.description=params.description;   
     // var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
     // var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
     // var clearMinutes = totalMinutes % 60;
     // console.log(totalHours + " hours and " + clearMinutes + " minutes");
     // task.duration=totalHours+":"+clearMinutes;
+    task.duration=params.duration;
     task.type=params.type;
     task.user=params.user;
     User.findById(id,(err,user)=>{
@@ -31,9 +39,6 @@ function saveTask(req,res){
             if(!user){
                 res.status(500).send({message:'No existe el usuario'});
             }else{
-                if(task.fecha_inicio=="Invalid date" || task.fecha_fin=="Invalid date"){
-                    res.status(500).send({message:'Introduce una fecha valida'});
-                }else{
                     task.save((err,taskStored)=>{
                         if(err){
                             res.status(500).send({message:'Error al crear la tarea'});
@@ -45,7 +50,6 @@ function saveTask(req,res){
                             }
                         }
                     });
-                }
                 
             }
            
@@ -56,7 +60,6 @@ function saveTask(req,res){
 
 function getTask(req,res){
     var taskId=req.params.id;
-    
     Task.findById(taskId).populate('user').exec((err,task)=>{
         if(err){
             res.status(500).send({message:'Error en la peticion'});
@@ -64,6 +67,7 @@ function getTask(req,res){
             if(!task){
                 res.status(404).send({message:'No existe la tarea'});
             }else{
+                console.log(task);
                 res.status(200).send({task});
             }
         }

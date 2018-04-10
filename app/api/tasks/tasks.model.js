@@ -9,6 +9,7 @@ var TaskSchema=Schema({
 		required: true
     },
     description:String,
+    localizacion:String,
     start:Date,
     end:Date,
     duration: String,
