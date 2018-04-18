@@ -152,6 +152,7 @@ function getImageFile(req,res){
         }
     });
 }
+
 module.exports={
     saveUser,
     deleteUser,

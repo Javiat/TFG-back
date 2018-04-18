@@ -16,7 +16,6 @@ function saveTask(req,res){
         var fecha_fin=moment(params.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
         task.start=fecha_inicio
         task.end=fecha_fin;
-        console.log('entra');
     }else{
         task.start='';
         task.end='';
@@ -32,6 +31,8 @@ function saveTask(req,res){
     task.duration=params.duration;
     task.type=params.type;
     task.user=params.user;
+    
+    console.log(task);
     User.findById(id,(err,user)=>{
         if(err){
             res.status(500).send({message:'No existe un usuario con ese id al que asociar la tarea'});
@@ -40,6 +41,7 @@ function saveTask(req,res){
                 res.status(500).send({message:'No existe el usuario'});
             }else{
                     task.save((err,taskStored)=>{
+                        console.log(taskStored);
                         if(err){
                             res.status(500).send({message:'Error al crear la tarea'});
                         }else{
@@ -73,9 +75,24 @@ function getTask(req,res){
         }
     });
 }
+function getTasksGame(req,res){
+    var userId=req.params.user;
+    var find=Task.find({user:userId,description:'Agenda Presidente'}).sort('type');
+    find.populate('user').exec((err,tasks)=>{
+        if(err){
+            res.status(500).send({message:'Error al hacer la consulta'});
+        }else{
+            if(!tasks){
+                res.status(404).send({message:'No existen tareas para este usuario'});
+            }else{
+                res.status(200).send({tasks});
+            }
+        }
+    });
+}
 function getTasks(req,res){
     var userId=req.params.user;
-    var find=Task.find({user:userId}).sort('type');
+    var find=Task.find({user:userId,description:'Agenda Personal'}).sort('type');
     find.populate('user').exec((err,tasks)=>{
         if(err){
             res.status(500).send({message:'Error al hacer la consulta'});
@@ -102,9 +119,9 @@ function updateTask(req,res){
     // update.duration=totalHours+":"+clearMinutes;
     console.log(update);
     Task.findById(taskId,(err,task)=>{
-             if(task.type=="solida"){
-                res.status(500).send({message:'Una tarea solida no puede ser actualizada'});
-             }else {
+            //  if(task.type=="solida"){
+            //     res.status(500).send({message:'Una tarea solida no puede ser actualizada'});
+            //  }else {
                
                 Task.findByIdAndUpdate(task.id,update,{new:true},(err,taskUpdated)=>{
                     
@@ -119,17 +136,23 @@ function updateTask(req,res){
                         }
                     }
                 });
-            }  
+            //}  
     });
     
 }
 function updateEvent(req,res){
     var taskId=req.params.id;
     var update=req.body;
-    var fecha_inicio=new Date();
-    var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
-    var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
-
+    if(update.start!=null && update.end!=null){
+        var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+        var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+        update.start=fecha_inicio
+        update.end=fecha_fin;
+    }else if(update.start!=null && update.end==null){
+        var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+        update.start=fecha_inicio;
+        update.end='';
+    }  
     console.log(fecha_inicio);
     update.start=fecha_inicio
     update.end=fecha_fin;
@@ -167,12 +190,53 @@ function deleteTask(req,res){
         }
     });
 }
-
+function uploadGame(req,res){
+    var userId=req.params.id;
+    var file_name="No subido...";
+    console.log(req.files.file.name);
+    if(req.files.file){
+        var file_path=req.files.file.path;
+        var file_split=file_path.split('\\');
+        console.log(file_split);
+        var file_name=file_split[3];
+        var ext_split=file_name.split('\.');
+        var file_ext=ext_split[1];
+        if(file_ext=='json'){
+            // User.findByIdAndUpdate(userId,{image:file_name},(err,userUpdated)=>{
+            //     if(!userUpdated){
+            //         res.status(404).send({message:'No se ha podido actualizar el usuario'});
+            //     }else{
+            //         res.status(200).send({image:file_name,user:userUpdated});
+            //     }
+    
+            // });
+            res.status(200).send({file:file_name});
+        }else{
+            res.status(200).send({message:'Extension del archivo no valida'});
+        }
+    }else{
+        res.status(200).send({message:'No has subido ningun json'});
+    }
+}
+function getGame(req,res){
+    var file=req.params.File;
+    var path_file='./app/res/game/'+file;
+    fs.exists(path_file,function(exists){
+        if(exists){
+            res.sendFile(path.resolve(path_file));
+        }else{
+            res.status(200).send({message:'No existe el fichero'});
+        }
+    });
+}
 module.exports={
     saveTask,
     getTask,
     getTasks,
     updateTask,
     deleteTask,
-    updateEvent
+    updateEvent,
+    getTasksGame,
+    uploadGame,
+    getGame
 };
