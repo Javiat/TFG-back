@@ -17,6 +17,7 @@ var TaskSchema=Schema({
        type: String,
        enum:['solida','liquida']
     },
+    colocado:Boolean,
     user:{type:Schema.ObjectId,ref:'User'}
 });
 

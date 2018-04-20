@@ -16,9 +16,11 @@ function saveTask(req,res){
         var fecha_fin=moment(params.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
         task.start=fecha_inicio
         task.end=fecha_fin;
+        task.colocado=true;
     }else{
         task.start='';
         task.end='';
+        task.colocado=false;
     }  
     task.title=params.title;
     task.localizacion=params.localizacion;
@@ -27,11 +29,10 @@ function saveTask(req,res){
     // var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
     // var clearMinutes = totalMinutes % 60;
     // console.log(totalHours + " hours and " + clearMinutes + " minutes");
-    // task.duration=totalHours+":"+clearMinutes;
+    // task.duration=totalHours+":"+clearMinutes;   
     task.duration=params.duration;
     task.type=params.type;
-    task.user=params.user;
-    
+    task.user=params.user; 
     console.log(task);
     User.findById(id,(err,user)=>{
         if(err){
@@ -117,7 +118,17 @@ function updateTask(req,res){
     // var clearMinutes = totalMinutes % 60;
     // console.log(totalHours + " hours and " + clearMinutes + " minutes");
     // update.duration=totalHours+":"+clearMinutes;
-    console.log(update);
+    if(update.start!=null && update.end!=null){
+        var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+        var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
+        update.start=fecha_inicio
+        update.end=fecha_fin;
+        update.colocado=true;
+    }else {
+        update.colocado=false;
+        update.start=''
+        update.end='';
+    }  
     Task.findById(taskId,(err,task)=>{
             //  if(task.type=="solida"){
             //     res.status(500).send({message:'Una tarea solida no puede ser actualizada'});
@@ -148,12 +159,12 @@ function updateEvent(req,res){
         var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
         update.start=fecha_inicio
         update.end=fecha_fin;
-    }else if(update.start!=null && update.end==null){
-        var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
-        update.start=fecha_inicio;
+        update.colocado=true;
+    }else {
+        update.colocado=false;
+        update.start=''
         update.end='';
     }  
-    console.log(fecha_inicio);
     update.start=fecha_inicio
     update.end=fecha_fin;
     console.log(update);
