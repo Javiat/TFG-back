@@ -15,9 +15,11 @@ var TaskSchema=Schema({
     duration: String,
     type:{
        type: String,
-       enum:['solida','liquida']
+       enum:['solida','liquida','solida importante personal','solida importante trabajo','solida urgente personal','solida urgente trabajo','solida personal','solida trabajo','liquida importante trabajo',
+        'liquida importante personal','liquida urgente trabajo','liquida urgente personal','liquida personal','liquida trabajo']
     },
     colocado:Boolean,
+    color:String,
     user:{type:Schema.ObjectId,ref:'User'}
 });
 

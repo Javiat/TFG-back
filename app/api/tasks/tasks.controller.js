@@ -21,7 +21,33 @@ function saveTask(req,res){
         task.start='';
         task.end='';
         task.colocado=false;
-    }  
+    }
+    if(params.type=='liquida importante trabajo'){
+        task.color='#2E6368'
+      }else if(params.type=='liquida importante personal'){
+        task.color='#265256'
+      }else if(params.type=='liquida urgente trabajo'){
+        task.color='#357379'
+      }else if(params.type=='liquida urgente personal'){
+        task.color='#3D838A'
+      }else if(params.type=='liquida trabajo'){
+        task.color='#53B4BD'
+      }else if(params.type=='liquida personal'){
+        task.color='#62BAC3'
+      }else if(params.type=='solida importante trabajo'){
+        task.color='#591D1C'
+      } else if(params.type=='solida importante personal'){
+       task.color='#6A2222'
+      }else if(params.type=='solida urgente trabajo'){
+        task.color='#8E2E2D'
+      }else if(params.type=='solida urgente personal'){
+       task.color='#9F3332'
+      }else if(params.type=='solida trabajo'){
+        task.color='#C74F4E'
+      }else if(params.type=='solida personal'){
+        task.color='#CD6160'
+      }
+    
     task.title=params.title;
     task.localizacion=params.localizacion;
     task.description=params.description;   
@@ -33,7 +59,7 @@ function saveTask(req,res){
     task.duration=params.duration;
     task.type=params.type;
     task.user=params.user; 
-    console.log(task);
+    
     User.findById(id,(err,user)=>{
         if(err){
             res.status(500).send({message:'No existe un usuario con ese id al que asociar la tarea'});
@@ -41,8 +67,7 @@ function saveTask(req,res){
             if(!user){
                 res.status(500).send({message:'No existe el usuario'});
             }else{
-                    task.save((err,taskStored)=>{
-                        console.log(taskStored);
+                    task.save((err,taskStored)=>{    
                         if(err){
                             res.status(500).send({message:'Error al crear la tarea'});
                         }else{
@@ -50,6 +75,7 @@ function saveTask(req,res){
                                 res.status(404).send({message:'No se ha podido crear la tarea'});
                             }else{
                                 res.status(200).send({task:taskStored});
+                                
                             }
                         }
                     });
@@ -70,7 +96,7 @@ function getTask(req,res){
             if(!task){
                 res.status(404).send({message:'No existe la tarea'});
             }else{
-                console.log(task);
+                
                 res.status(200).send({task});
             }
         }
@@ -142,7 +168,7 @@ function updateTask(req,res){
                         if(!taskUpdated){
                             res.status(404).send({message:'No se ha actualizado la tarea'});
                         }else{
-                            console.log(taskUpdated);
+                           
                             res.status(200).send({task:taskUpdated});
                         }
                     }
@@ -165,9 +191,7 @@ function updateEvent(req,res){
         update.start=''
         update.end='';
     }  
-    update.start=fecha_inicio
-    update.end=fecha_fin;
-    console.log(update);
+   
     // var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
     // var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
     // var clearMinutes = totalMinutes % 60;
@@ -180,7 +204,7 @@ function updateEvent(req,res){
             if(!taskUpdated){
                 res.status(404).send({message:'No se ha actualizado la tarea'});
             }else{
-                console.log(taskUpdated);
+               
                 res.status(200).send({task:taskUpdated});
             }
          }
