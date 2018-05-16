@@ -14,6 +14,8 @@ api.post('/image-user/:id',md_upload,UserController.uploadImage);
 
 api.delete('/delete-user/:id',UserController.deleteUser);
 
+api.put('/update-partidas/:id',UserController.updatePartidas);
 api.put('/update-user/:id',UserController.updateUser);
 api.get('/get-image-user/:imageFile',UserController.getImageFile);
+
 module.exports=api;

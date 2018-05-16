@@ -13,6 +13,7 @@ function saveUser(req,res){
     user.email=params.email;
     user.password=params.password;
     user.image=params.image;
+    user.partidas=params.partidas;
     if(params.email && params.password){
         User.findOne({email: params.email.toLowerCase()},function(err,User){
             if(err){
@@ -82,9 +83,6 @@ function loginUser(req,res){
 }
 function updateUser(req,res){
     var userId=req.params.id;
-    //var password=req.body.password;
-    //bcrypt.hash(password,null,null,function(err,hash){
-    //req.body.password=hash;
     var update=req.body;
             User.findByIdAndUpdate(userId,update,{new:true},(err,userUpdated)=>{
             if(err){
@@ -98,7 +96,24 @@ function updateUser(req,res){
             }
             
         });
-    //});
+}
+function updatePartidas(req,res){
+    var userId=req.params.id;
+    var update=req.body;
+    update.partidas=update.partidas+1;
+    console.log(update);
+            User.findByIdAndUpdate(userId,update,{new:true},(err,userUpdated)=>{
+            if(err){
+                res.status(500).send({mesage:'Error al actualizar el usuario'});
+            }else{
+                if(!userUpdated){
+                    res.status(404).send({mesage:'No se ha podido actualizar el usuario'});
+                }else{
+                    res.status(200).send({user:userUpdated});
+                }
+            }
+            
+        });
 }
 function deleteUser(req,res){
     var user_id=req.params.id;
@@ -118,7 +133,6 @@ function deleteUser(req,res){
 function uploadImage(req,res){
     var userId=req.params.id;
     var file_name="No subido...";
-    console.log(req.files.image);
     if(req.files.image){
         var file_path=req.files.image.path;
         var file_split=file_path.split('\\');
@@ -152,6 +166,20 @@ function getImageFile(req,res){
         }
     });
 }
+function getPartidas(req,res){
+    var id=req.params.id;
+    User.findOne({id:id},(err,user)=>{
+        if(err){
+         res.status(404).send({message:'Error al hacer el login'});
+        }else{
+            if(!user){
+                 res.status(500).send({message:'No existe el usuario'});
+            }else{
+                 console.log(user.partidas);
+            }
+        }
+     });
+}
 
 module.exports={
     saveUser,
@@ -159,5 +187,7 @@ module.exports={
     loginUser,
     updateUser,
     uploadImage,
-    getImageFile
+    getImageFile,
+    updatePartidas,
+
 };
