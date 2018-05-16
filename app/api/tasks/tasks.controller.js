@@ -6,7 +6,16 @@ var fs=require('fs');
 var User=require('../users/users.model');
 var Task=require('./tasks.model');
 var moment=require('moment');
+var functions=require('./function');
 
+function saveTaskJuego(req,res){
+    var tasks= functions.solucion_inicial(req.params.id);
+    res.status(200).send({tasks});
+}
+function caso_base(req,res){
+    var tasks= functions.caso_base(req.params.id);
+    res.status(200).send({tasks});
+}
 function saveTask(req,res){
     var task=new Task();
     var params=req.body;
@@ -16,12 +25,13 @@ function saveTask(req,res){
         var fecha_fin=moment(params.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
         task.start=fecha_inicio
         task.end=fecha_fin;
-        task.colocado=true;
+        
     }else{
         task.start='';
         task.end='';
-        task.colocado=false;
+        
     }
+    task.colocado=false;
     if(params.type=='liquida importante trabajo'){
         task.color='#2E6368'
       }else if(params.type=='liquida importante personal'){
@@ -35,19 +45,24 @@ function saveTask(req,res){
       }else if(params.type=='liquida personal'){
         task.color='#62BAC3'
       }else if(params.type=='solida importante trabajo'){
-        task.color='#591D1C'
+        task.color='#591D1C';
+        task.colocado=true;
       } else if(params.type=='solida importante personal'){
-       task.color='#6A2222'
+       task.color='#6A2222';
+       task.colocado=true;
       }else if(params.type=='solida urgente trabajo'){
-        task.color='#8E2E2D'
+        task.color='#8E2E2D';
+        task.colocado=true;
       }else if(params.type=='solida urgente personal'){
-       task.color='#9F3332'
+       task.color='#9F3332';
+       task.colocado=true;
       }else if(params.type=='solida trabajo'){
-        task.color='#C74F4E'
+        task.color='#C74F4E';
+        task.colocado=true;
       }else if(params.type=='solida personal'){
-        task.color='#CD6160'
+        task.color='#CD6160';
+        task.colocado=true;
       }
-    
     task.title=params.title;
     task.localizacion=params.localizacion;
     task.description=params.description;   
@@ -59,7 +74,6 @@ function saveTask(req,res){
     task.duration=params.duration;
     task.type=params.type;
     task.user=params.user; 
-    
     User.findById(id,(err,user)=>{
         if(err){
             res.status(500).send({message:'No existe un usuario con ese id al que asociar la tarea'});
@@ -135,15 +149,6 @@ function getTasks(req,res){
 function updateTask(req,res){
     var taskId=req.params.id;
     var update=req.body;
-    // var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
-    // var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
-    // update.start=fecha_inicio;
-    // update.end=fecha_fin;
-    // var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
-    // var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
-    // var clearMinutes = totalMinutes % 60;
-    // console.log(totalHours + " hours and " + clearMinutes + " minutes");
-    // update.duration=totalHours+":"+clearMinutes;
     if(update.start!=null && update.end!=null){
         var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
         var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
@@ -273,5 +278,7 @@ module.exports={
     updateEvent,
     getTasksGame,
     uploadGame,
-    getGame
+    getGame,
+    saveTaskJuego,
+    caso_base
 };

@@ -14,6 +14,8 @@ api.get('/get-task/:id',TaskController.getTask);
 api.get('/get-tasks/:user',TaskController.getTasks);
 api.get('/get-tasks-game/:user',TaskController.getTasksGame);
 api.get('/get-file/:File',TaskController.getGame);
+api.get('/get-task-juego/:id',TaskController.saveTaskJuego);
+api.get('/caso-base/:id',TaskController.caso_base);
 //Operaciones put
 api.put('/update-task/:id',TaskController.updateTask);
 api.put('/update-event/:id',TaskController.updateEvent);
