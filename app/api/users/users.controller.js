@@ -100,16 +100,18 @@ function updateUser(req,res){
 function updatePartidas(req,res){
     var userId=req.params.id;
     var update=req.body;
-    update.partidas=update.partidas+1;
     console.log(update);
+    update.partidas++;
+    
             User.findByIdAndUpdate(userId,update,{new:true},(err,userUpdated)=>{
             if(err){
-                res.status(500).send({mesage:'Error al actualizar el usuario'});
+                res.status(500).send({message:'Error al actualizar el usuario'});
             }else{
                 if(!userUpdated){
-                    res.status(404).send({mesage:'No se ha podido actualizar el usuario'});
+                    res.status(404).send({message:'No se ha podido actualizar el usuario'});
                 }else{
-                    res.status(200).send({user:userUpdated});
+                    res.status(200).send({userUpdated});
+                    console.log(userUpdated);
                 }
             }
             
@@ -166,20 +168,22 @@ function getImageFile(req,res){
         }
     });
 }
-function getPartidas(req,res){
-    var id=req.params.id;
-    User.findOne({id:id},(err,user)=>{
+function getUser(req,res){
+    var userId=req.params.id;
+    User.findById(userId).populate('user').exec((err,user)=>{
         if(err){
-         res.status(404).send({message:'Error al hacer el login'});
+            res.status(500).send({message:'Error en la peticion'});
         }else{
             if(!user){
-                 res.status(500).send({message:'No existe el usuario'});
+                res.status(404).send({message:'No existe el user'});
             }else{
-                 console.log(user.partidas);
+                
+                res.status(200).send({user});
             }
         }
-     });
+    });
 }
+
 
 module.exports={
     saveUser,
@@ -189,5 +193,5 @@ module.exports={
     uploadImage,
     getImageFile,
     updatePartidas,
-
+    getUser
 };
