@@ -13,7 +13,8 @@ function saveUser(req,res){
     user.email=params.email;
     user.password=params.password;
     user.image=params.image;
-    user.partidas=params.partidas;
+    
+    console.log(user);
     if(params.email && params.password){
         User.findOne({email: params.email.toLowerCase()},function(err,User){
             if(err){

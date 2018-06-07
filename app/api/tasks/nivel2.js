@@ -1,5 +1,4 @@
-
-function nivel3(){
+function nivel2(){
     var tasks = [{
         title: 'Reunion BBVA',
         description:'Agenda Presidente',
@@ -113,57 +112,6 @@ function nivel3(){
         user:''
     },
     {
-        title: 'Inauguración nueva sede Telefonica',
-        description:'Agenda Presidente',
-        localizacion:'Madrid',
-        start: null,
-        end:null,
-        duration:4.00,
-        type:'liquida trabajo',
-        user:''
-    },
-    {
-        title: 'Entrevista Gas Natural',
-        description:'Agenda Presidente',
-        localizacion:'Barna',
-        start: null,
-        end:null,
-        duration:2.00,
-        type:'liquida trabajo',
-        user:''
-    },
-    {
-        title: 'Congreso Teleco Portugal',
-        description:'Agenda Presidente',
-        localizacion:'Lisboa',
-        start: null,
-        end:null,
-        duration:4.00,
-        type:'liquida urgente trabajo',
-        user:''
-    },
-    {
-        title: 'Reunion Patentes Talgo',
-        description:'Agenda Presidente',
-        localizacion:'Madrid',
-        start: null,
-        end:null,
-        duration:3.00,
-        type:'liquida importante trabajo',
-        user:'',
-       
-    },
-    {
-        title: 'Entrevista Seleccion Consejeros',
-        description:'Agenda Presidente',
-        localizacion:'Madrid',
-        start: null,
-        end:null,
-        duration:2.00,
-        type:'liquida trabajo',
-        user:''
-    },
-    {
         title: 'Reunion Subsecretario Economia',
         description:'Agenda Presidente',
         localizacion:'Madrid',
@@ -203,19 +151,19 @@ function nivel3(){
         type:'liquida personal',
         user:''
     },
-    // {
-    //     title: 'Bautizo',
-    //     description:'Agenda Presidente',
-    //     localizacion:'Madrid',
-    //     start: null,
-    //     end:null,
-    //     duration:8.00,
-    //     type:'solida importante personal',
-    //     user:''
-    // },
+    {
+        title: 'Bautizo',
+        description:'Agenda Presidente',
+        localizacion:'Madrid',
+        start: null,
+        end:null,
+        duration:8.00,
+        type:'solida importante personal',
+        user:''
+    },
     ];
     return tasks;
 }
 module.exports={
-    nivel3
+    nivel2
   };

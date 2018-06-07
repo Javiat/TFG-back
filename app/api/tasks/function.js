@@ -3,8 +3,18 @@ var User=require('../users/users.model');
 var Task=require('./tasks.model');
 var moment=require('moment');
 var nivel3=require('./nivel3');
-function solucion_inicial (id){
-        var tasks=nivel3.nivel3();
+var nivel2=require('./nivel2');
+var nivel1=require('./nivel1');
+function solucion_inicial (id,nivel){
+        var tasks;
+        if(nivel==3){
+            tasks=nivel3.nivel3();
+        }else if(nivel==2){
+            tasks=nivel2.nivel2();
+        }else if(nivel==1){
+            tasks=nivel1.nivel1();
+        }
+        tasks = tasks.sort(function() {return Math.random() - 0.5});
         var horas=12;
         var f=new Date();
         var diapararestar=f.getUTCDay();
@@ -18,7 +28,6 @@ function solucion_inicial (id){
         var month=(f.getMonth() +1);
         var hora_inicio;
         var day_fecha=f.getDate();
-        
         if(day_fecha<10){
             day_fecha="0"+day_fecha;
         }
@@ -67,14 +76,22 @@ function solucion_inicial (id){
                             tasks[i].end=fecha;
                             horas=horas-tasks[i].duration;
                         }
-                    
+                        tasks[i].colocado=true;
                     }
                     save(tasks[i]);
         }
         return tasks;
 }
-function caso_base(id){
-    var tasks=nivel3.nivel3();
+function caso_base(id,nivel){
+    var tasks;
+    if(nivel==3){
+        tasks=nivel3.nivel3();
+    }else if(nivel==2){
+        tasks=nivel2.nivel2();
+    }else if(nivel==1){
+        tasks=nivel1.nivel1();
+    }
+    tasks = tasks.sort(function() {return Math.random() - 0.5});
     var horas=12;
         var f=new Date();
         var diapararestar=f.getUTCDay();
@@ -96,9 +113,6 @@ function caso_base(id){
         tasks[i].user=id;
         if( tasks[i].start==null && tasks[i].end==null && (tasks[i].type=='solida importante trabajo' || tasks[i].type=='solida importante personal' || tasks[i].type=='solida urgente trabajo' || tasks[i].type=='solida urgente personal'
             || tasks[i].type=='solida trabajo' || tasks[i].type=='solida personal')){
-                
-                
-                    
                         hora_inicio=9;
                         var fecha=f.getFullYear() + "-0" + month + "-" + day_fecha+"T0"+hora_inicio;
                         tasks[i].start=fecha;
@@ -120,7 +134,7 @@ function caso_base(id){
                         }else{
                         day_fecha=day_suma;
                         }
-                    
+                        tasks[i].colocado=true;
                
                 console.log(tasks[i]);
 
@@ -145,7 +159,7 @@ function save(tarea){
         task.end='';
         
     }
-    task.colocado=false;
+    task.colocado=params.colocado;
     if(params.type=='liquida importante trabajo'){
         task.color='#2E6368'
       }else if(params.type=='liquida importante personal'){
@@ -160,22 +174,22 @@ function save(tarea){
         task.color='#62BAC3'
       }else if(params.type=='solida importante trabajo'){
         task.color='#591D1C';
-        task.colocado=true;
+        
       } else if(params.type=='solida importante personal'){
        task.color='#6A2222';
-       task.colocado=true;
+      
       }else if(params.type=='solida urgente trabajo'){
         task.color='#8E2E2D';
-        task.colocado=true;
+        
       }else if(params.type=='solida urgente personal'){
        task.color='#9F3332';
-       task.colocado=true;
+      
       }else if(params.type=='solida trabajo'){
         task.color='#C74F4E';
-        task.colocado=true;
+        
       }else if(params.type=='solida personal'){
         task.color='#CD6160';
-        task.colocado=true;
+       
       }
     task.title=params.title;
     task.localizacion=params.localizacion;

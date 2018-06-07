@@ -9,11 +9,17 @@ var moment=require('moment');
 var functions=require('./function');
 
 function saveTaskJuego(req,res){
-    var tasks= functions.solucion_inicial(req.params.id);
-    res.status(200).send({tasks});
+    console.log(req.params);
+    var tasks= functions.solucion_inicial(req.params.id,req.params.nivel);
+    if(tasks){
+        res.status(200).send({tasks});
+    }else{
+        res.status(500).send({message:'Error'});
+    }
+    
 }
 function caso_base(req,res){
-    var tasks= functions.caso_base(req.params.id);
+    var tasks= functions.caso_base(req.params.id,req.params.nivel);
     res.status(200).send({tasks});
 }
 function saveTask(req,res){
@@ -229,6 +235,8 @@ function deleteTask(req,res){
             }
         }
     });
+    
+    
 }
 function uploadGame(req,res){
     var userId=req.params.id;

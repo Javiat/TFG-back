@@ -9,6 +9,7 @@ var UserSchema=Schema({
     email:String,
     password:String,
     image:String,
-    partidas:Number
 });
+
+
 module.exports=mongoose.model('User',UserSchema);

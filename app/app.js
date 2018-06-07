@@ -8,6 +8,7 @@ var app=express();
 //Cargar rutas
 var user_routes=require('./api/users/users.routes');
 var task_routes=require('./api/tasks/tasks.routes');
+var partidas_routes=require('./api/partidas/partidas.routes');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
@@ -15,7 +16,7 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', "Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method");
-    res.header('Access-Control-Allow-Methods', "GET, POST, OPTIONS, PUT, DELETE");
+    res.header('Access-Control-Allow-Methods', "GET,POST,OPTIONS,PUT,DELETE");
     res.header('Allow', "GET, POST, OPTIONS, PUT, DELETE" );
     
     next();
@@ -24,4 +25,5 @@ app.use((req, res, next) => {
 //Cargar rutas base
 app.use('/api',user_routes);
 app.use('/api',task_routes);
+app.use('/api',partidas_routes)
 module.exports=app;
