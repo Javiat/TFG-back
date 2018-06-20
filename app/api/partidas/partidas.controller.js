@@ -1,6 +1,5 @@
 'use strict'
 var Partida=require('./partidas.model');
-var bcrypt=require('bcrypt-nodejs');
 var moment=require('moment');
 
 function savePartida(req,res){
@@ -13,6 +12,7 @@ function savePartida(req,res){
     partida.fin=params.fin;
     partida.bien_planificadas=params.bien_planificadas;
     partida.mal_planificadas=params.mal_planificadas;
+    partida.nivel=params.nivel;
     partida.save((err,partidaStored)=>{
         if(err){
             res.status(500).send({message:'Error al guardar la partida'});
@@ -28,7 +28,6 @@ function savePartida(req,res){
 
 function updatePartida(req,res){
     var partidaId=req.params.id;
-    console.log(partidaId);
     var update=req.body;
     var f=new Date();
     var fecha_fin=moment(f).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
@@ -47,10 +46,29 @@ function updatePartida(req,res){
     });
 }
 
+function getPartidas(req,res){
+    var userId=req.params.id;
+    console.log(userId);
+    var find=Partida.find({user:userId}).sort('id');
+    find.populate('user').exec((err,partidas)=>{
+        if(err){
+            res.status(500).send({message:'Error al hacer la consulta'});
+        }else{
+            if(!partidas){
+                res.status(404).send({message:'No existen partidas para este usuario'});
+            }else{
+                res.status(200).send({partidas});
+                console.log(partidas.length);
+            }
+        }
+    });
+}
+
 
 module.exports={
     savePartida,
-    updatePartida
+    updatePartida,
+    getPartidas
 }
                
         

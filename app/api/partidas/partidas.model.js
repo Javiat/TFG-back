@@ -13,6 +13,7 @@ var mongoose=require('mongoose'),
         duracion:Number,
         bien_planificadas:[],
         mal_planificadas:[],
+        nivel:Number,
         user:{type:Schema.ObjectId,ref:'User'}
     });
 
