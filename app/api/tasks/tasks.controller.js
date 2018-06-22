@@ -191,6 +191,7 @@ function updateTask(req,res){
 function updateEvent(req,res){
     var taskId=req.params.id;
     var update=req.body;
+    console.log(update);
     if(update.start!=null && update.end!=null){
         var fecha_inicio=moment(update.start).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
         var fecha_fin=moment(update.end).format("YYYY-MM-DDTHH:mm:ss.SSSS[Z]");
@@ -201,13 +202,8 @@ function updateEvent(req,res){
         update.colocado=false;
         update.start=''
         update.end='';
-    }  
-   
-    // var totalHours = fecha_fin.diff(fecha_inicio, 'hours');
-    // var totalMinutes = fecha_fin.diff(fecha_inicio, 'minutes');
-    // var clearMinutes = totalMinutes % 60;
-    // console.log(totalHours + " hours and " + clearMinutes + " minutes");
-    // update.duration=totalHours+":"+clearMinutes;
+    }
+    console.log(update);  
     Task.findByIdAndUpdate(taskId,update,{new:true},(err,taskUpdated)=>{  
         if(err){
             res.status(500).send({message:'Error en el servidor'});
